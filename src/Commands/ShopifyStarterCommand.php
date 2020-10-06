@@ -33,6 +33,8 @@ class ShopifyStarterCommand extends Command
 
     const ANSWER_NO = 'Nope';
 
+    const DEFAULT_ANSWER_INDEX = 0;
+
     /**
      * Create a new command instance.
      *
@@ -55,13 +57,13 @@ class ShopifyStarterCommand extends Command
         $this->installComposerPackages = $this->choice(
             'Install Composer Packages?',
             [self::ANSWER_YES, self::ANSWER_NO],
-            0
+            self::DEFAULT_ANSWER_INDEX
         );
 
         $this->installNpmPackages = $this->choice(
             'Install NPM Packages?',
             [self::ANSWER_YES, self::ANSWER_NO],
-            0
+            self::DEFAULT_ANSWER_INDEX
         );
 
         $this->performSetupSteps();
