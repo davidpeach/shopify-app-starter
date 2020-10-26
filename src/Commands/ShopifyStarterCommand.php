@@ -74,6 +74,7 @@ class ShopifyStarterCommand extends Command
         $this->attemptComposerPackageInstalls();
         $this->addRequriedProviders();
         $this->publishEscAssets();
+        $this->fixEscShopsTableMigration();
         $this->attemptNpmPackageInstalls();
         $this->scaffoldEscTestCase();
     }
@@ -116,6 +117,24 @@ class ShopifyStarterCommand extends Command
             $process->run();
 
             $this->info($process->getOutput());
+    }
+
+    private function fixEscShopsTableMigration()
+    {
+        $path_to_file = database_path('migrations/2016_07_03_000000_create_shops_table.php');
+        $file_contents = file_get_contents($path_to_file);
+
+        if (strpos($file_contents, "table->integer('user_id')->unsigned()") === false) {
+            return;
+        }
+
+        $file_contents = str_replace(
+            "table->integer('user_id')->unsigned()",
+            "table->unsignedBigInteger('user_id')",
+            $file_contents
+        );
+
+        file_put_contents($path_to_file, $file_contents);
     }
 
     private function attemptNpmPackageInstalls()
