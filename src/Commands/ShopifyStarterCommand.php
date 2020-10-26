@@ -73,6 +73,7 @@ class ShopifyStarterCommand extends Command
     {
         $this->attemptComposerPackageInstalls();
         $this->addRequriedProviders();
+        $this->publishEscAssets();
         $this->attemptNpmPackageInstalls();
         $this->scaffoldEscTestCase();
     }
@@ -106,6 +107,15 @@ class ShopifyStarterCommand extends Command
             $file_contents
         );
         file_put_contents($path_to_file, $file_contents);
+    }
+
+    private function publishEscAssets(){
+        $process = new Process(
+                ['php', 'artisan', 'vendor:publish', '--provider', 'Esc\Shopify\Providers\APIServiceProvider']
+            );
+            $process->run();
+
+            $this->info($process->getOutput());
     }
 
     private function attemptNpmPackageInstalls()
