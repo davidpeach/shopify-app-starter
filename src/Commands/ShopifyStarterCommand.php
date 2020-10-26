@@ -73,6 +73,7 @@ class ShopifyStarterCommand extends Command
     {
         $this->attemptComposerPackageInstalls();
         $this->attemptNpmPackageInstalls();
+        $this->scaffoldEscTestCase();
     }
 
     private function attemptComposerPackageInstalls()
@@ -100,5 +101,17 @@ class ShopifyStarterCommand extends Command
             $process->run();
             $this->info($process->getOutput());
         });
+    }
+
+    private function scaffoldEscTestCase()
+    {
+        if (file_exists($path = base_path('tests/EscTestCase.php'))) {
+            return;
+        }
+
+        file_put_contents(
+            $path,
+            file_get_contents(__DIR__ . '/../stubs/EscTestCase.stub')
+        );
     }
 }

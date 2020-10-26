@@ -1,0 +1,46 @@
+<?php
+
+namespace Tests;
+
+use App\Shop;
+use App\User;
+use Tests\TestClass as LaravelBaseTestCase;
+
+abstract class EscTestCase extends LaravelBaseTestCase
+{
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    /**
+     * Sign in as a user
+     *
+     * @param  User|null $user Optional existing user to sign in as.
+     * @return void
+     */
+    public function signIn(User $user=null): void
+    {
+        if (is_null($user)) {
+            $user = factory(User::class)->create();
+        }
+
+        $this->be($user);
+    }
+
+    /**
+     * Create a new shop with an optional existing user.
+     *
+     * @param  User|null $user Optional existing user to create shop for.
+     * @return Shop            The newly-created shop
+     */
+    public function createShop(User $user=null): Shop
+    {
+        $this->signIn($user);
+
+        return factory(Shop::class)->create([
+            'user_id' => auth()->id(),
+        ]);
+    }
+}
