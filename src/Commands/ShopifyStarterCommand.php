@@ -72,6 +72,7 @@ class ShopifyStarterCommand extends Command
     private function performSetupSteps()
     {
         $this->attemptComposerPackageInstalls();
+        $this->addRequriedProviders();
         $this->attemptNpmPackageInstalls();
         $this->scaffoldEscTestCase();
     }
@@ -88,6 +89,23 @@ class ShopifyStarterCommand extends Command
 
             $this->info($process->getOutput());
         });
+    }
+
+    private function addRequriedProviders()
+    {
+        $path_to_file = config_path('app.php');
+        $file_contents = file_get_contents($path_to_file);
+
+        if (strpos($file_contents, 'Esc\Shopify\Providers\APIServiceProvider::class') !== false) {
+            return;
+        }
+
+        $file_contents = str_replace(
+            "DavidPeach\ShopifyStarter\ShopifyStarterServiceProvider::class,",
+            "DavidPeach\ShopifyStarter\ShopifyStarterServiceProvider::class,\n        Esc\Shopify\Providers\APIServiceProvider::class,",
+            $file_contents
+        );
+        file_put_contents($path_to_file, $file_contents);
     }
 
     private function attemptNpmPackageInstalls()
